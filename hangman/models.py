@@ -66,6 +66,39 @@ class Game(ndb.Model):
         form.moves = self.moves
         return form
 
+    def end_game(self, won=False):
+        """
+        Ends the game
+        """
+        self.game_over = True
+        self.put()
+        # Add the game to the score 'board'
+        score = Score(user=self.user, date=date.today(), won=won,
+                      guesses=self.attempts_allowed - self.attempts_remaining)
+        score.put()
+
+        user = User.query(User.name == self.user.get().name).get()
+        if won:
+            user.wins += 1
+        else:
+            user.loses += 1
+        user.put()
+
+class Score(ndb.Model):
+    """
+    Score object
+    """
+    user = ndb.KeyProperty(required = True, kind = 'User')
+    date = ndb.DateProperty(required = True)
+    won = ndb.BooleanProperty(required = True)
+    guesses = ndb.IntegerProperty(required = True)
+
+    def to_form(self):
+        return ScoreForm(user_name = self.user.get().name,
+                            won = self.won,
+                            date = str(self.date),
+                            guesses = self.guesses)
+
 class GameForm(messages.Message):
     """
     GameForm for outbound game state information
@@ -86,9 +119,15 @@ class NewGameForm(messages.Message):
     target = messages.StringField(2)
     attempts = messages.IntegerField(3, default = 5)
 
+class MakeMoveForm(messages.Message):
+    """
+    Make a move in an existing game
+    """
+    guess = messages.StringField(1, required = True)
+
 
 class StringMessage(messages.Message):
     """
     StringMessage-- outbound (single) string message
     """
-    message = messages.StringField(1, required=True)
+    message = messages.StringField(1, required = True)
