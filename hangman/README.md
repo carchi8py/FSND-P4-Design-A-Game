@@ -129,4 +129,88 @@ and your lose
  "message": "User user created"
 }
 ```
+- Call hangman.new_game and give your username
+```json
+{
+ "attempts_remaining": "5",
+ "game_over": false,
+ "message": "Good Luck",
+ "revealed_word": "***********",
+ "urlsafe_key": "agtkZXZ-aGFuZ21hbnIRCxIER2FtZRiAgICAgPiFCQw",
+ "user_name": "user"
+}
+```
+- Call hangman.make_move give urlsafe_key and pick a letter
+```json
+{
+ "attempts_remaining": "5",
+ "game_over": false,
+ "message": "Hit",
+ "moves": [
+  "Guess: 'a', Result: '*********a*'"
+ ],
+ "revealed_word": "*********a*",
+ "urlsafe_key": "agtkZXZ-aGFuZ21hbnIRCxIER2FtZRiAgICAgPiFCQw",
+ "user_name": "user"
+}
+```
+```json
+{
+ "attempts_remaining": "4",
+ "game_over": false,
+ "message": "Miss",
+ "moves": [
+  "Guess: 'a', Result: '*********a*'",
+  "Guess: 'z', Result: '*********a*'"
+ ],
+ "revealed_word": "*********a*",
+ "urlsafe_key": "agtkZXZ-aGFuZ21hbnIRCxIER2FtZRiAgICAgPiFCQw",
+ "user_name": "user"
+}
+```
+- Call hangman.get_game and give the urlsafe_key
+```json
+{
+ "moves": [
+  "Guess: 'a', Result: '*********a*'",
+  "Guess: 'z', Result: '*********a*'"
+ ]
+}
+```
+- Call hangman.get_user_rankings to see the who has the most wins
+{
+```json
+ "items": [
+  {
+   "loses": "0",
+   "user_name": "carchi8py",
+   "wins": "1"
+  },
+  {
+   "loses": "0",
+   "user_name": "bob",
+   "wins": "1"
+  }
+ ]
+}
+```
+- Call Hangman.get_high_scores to see who has the least ammount of guesses to win
+```json
+{
+ "items": [
+  {
+   "date": "2016-07-06",
+   "guesses": "0",
+   "user_name": "bob",
+   "won": true
+  },
+  {
+   "date": "2016-07-04",
+   "guesses": "48",
+   "user_name": "carchi8py",
+   "won": true
+  }
+ ]
+}
+```
  
