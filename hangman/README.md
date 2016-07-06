@@ -124,9 +124,9 @@ and your lose
 
 ##Example of how to test
 - Call Hangman.create_user and create a user
-'''json
+```json
 {
  "message": "User user created"
 }
-'''
+```
  
