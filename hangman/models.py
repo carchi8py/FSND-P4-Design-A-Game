@@ -167,6 +167,12 @@ class UserForms(messages.Message):
     """
     items = messages.MessageField(UserForm, 1, repeated = True)
 
+class MoveHistoryForm(messages.Message):
+    """
+    MoveHistoryForm for outbound a completed game's moves history
+    """
+    moves = messages.StringField(1, repeated = True)
+
 class StringMessage(messages.Message):
     """
     StringMessage-- outbound (single) string message

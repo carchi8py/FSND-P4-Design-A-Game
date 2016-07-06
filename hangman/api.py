@@ -13,7 +13,7 @@ from google.appengine.api import taskqueue
 
 from models import User, Game, Score
 from models import StringMessage, NewGameForm, GameForm, MakeMoveForm,\
-    GameForms, ScoreForms, UserForms
+    GameForms, ScoreForms, UserForms, MoveHistoryForm
 import util
 
 USER_REQUEST = endpoints.ResourceContainer(
@@ -182,6 +182,20 @@ class Hangman(remote.Service):
         """
         users = User.query(User.wins > 0).order(User.wins)
         return UserForms(items = [user.to_form() for user in users])
+
+    @endpoints.method(request_message=GET_GAME_REQUEST,
+                      response_message=MoveHistoryForm,
+                      path='game/history/{urlsafe_game_key}',
+                      name='get_game_history',
+                      http_method='GET')
+    def get_game_history(self, request):
+        """
+        Return all move in a game
+        """
+        game = util.get_by_urlsafe(request.urlsafe_game_key, Game)
+        if not game:
+            raise endpoints.NotFoundException('Game not found!')
+        return MoveHistoryForm(moves = game.moves)
 
     def _winner(self, game):
         """
