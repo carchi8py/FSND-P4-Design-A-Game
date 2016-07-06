@@ -111,6 +111,10 @@ class GameForm(messages.Message):
     revealed_word = messages.StringField(6, required = True)
     moves = messages.StringField(7, repeated = True)
 
+class GameForms(messages.Message):
+    """Return multiple GameForms"""
+    items = messages.MessageField(GameForm, 1, repeated = True)
+
 class NewGameForm(messages.Message):
     """
     Used to create a new game

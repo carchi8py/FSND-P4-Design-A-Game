@@ -12,7 +12,8 @@ from google.appengine.api import memcache
 from google.appengine.api import taskqueue
 
 from models import User, Game
-from models import StringMessage, NewGameForm, GameForm, MakeMoveForm
+from models import StringMessage, NewGameForm, GameForm, MakeMoveForm,\
+    GameForms
 import util
 
 USER_REQUEST = endpoints.ResourceContainer(user_name = messages.StringField(1),
@@ -116,6 +117,23 @@ class Hangman(remote.Service):
             game.put()
             return game.to_form(hit_or_miss)
 
+    @endpoints.method(request_message=USER_REQUEST,
+                      response_message=GameForms,
+                      path='games/user/{user_name}',
+                      name='get_user_games',
+                      http_method='GET')
+    def get_user_games(self, request):
+        """
+        Returns all the Users active games
+        """
+        user = User.query(User.name == request.user_name).get()
+        if not user:
+            raise endpoints.NotFoundException(
+                "User %s dosn't exist" % request.user_name)
+        # we only care about the game that are not complete
+        games = Game.query(Game.user == user.key).filter(Game.game_over == False)
+        return GameForms(items=[game.to_form('') for game in games])
+
     @endpoints.method(request_message=GET_GAME_REQUEST,
                       response_message=StringMessage,
                       path='game/{urlsafe_game_key}',
@@ -129,10 +147,12 @@ class Hangman(remote.Service):
         #check to see if the game exist or not
         if not game:
             raise endpoints.NotFoundException("Game Not Found")
+        #If we have a game and it not over delete the game
         if not game.game_over:
             game.key.delete()
             return StringMessage(message="Game {} cancelled!".format(
                     game.key.urlsafe()))
+        #don't delete finished games
         else:
             return StringMessage(message="Can't cancel, completed game".format(
                     game.key.urlsafe()))
