@@ -90,7 +90,7 @@ and your lose
 
 ##Models Included:
  - **User**
-    - Stores unique user_name and (optional) email address.
+    - Stores unique user_name, (optional) email address, the number of winns, and losses.
     
  - **Game**
     - Stores unique game states. Associated with User model via KeyProperty.
@@ -99,11 +99,13 @@ and your lose
     - Records completed games. Associated with Users model via KeyProperty.
     
 ##Forms Included:
- - **GameForm**
+- **GameForm**
     - Representation of a Game's state (urlsafe_key, attempts_remaining,
-    game_over flag, message, user_name).
+    game_over flag, message, user_name, revealed_word, moves).
+ - **GameForms**
+    - Multiple ScoreForm container.
  - **NewGameForm**
-    - Used to create a new game (user_name, min, max, attempts)
+    - Used to create a new game (user_name, target, attempts)
  - **MakeMoveForm**
     - Inbound make move form (guess).
  - **ScoreForm**
@@ -111,5 +113,11 @@ and your lose
     guesses).
  - **ScoreForms**
     - Multiple ScoreForm container.
+ - **UserForm**
+    - Representation of a user's performance (user_name, performance).
+ - **UserForms**
+    - Multiple UserForm container.
+- **MoveHistoryForm**
+    - MoveHistoryForm for outbound a completed game's moves history.
  - **StringMessage**
     - General purpose String container.
