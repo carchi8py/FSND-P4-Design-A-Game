@@ -102,22 +102,31 @@ and your lose
 - **GameForm**
     - Representation of a Game's state (urlsafe_key, attempts_remaining,
     game_over flag, message, user_name, revealed_word, moves).
- - **GameForms**
+- **GameForms**
     - Multiple ScoreForm container.
- - **NewGameForm**
+- **NewGameForm**
     - Used to create a new game (user_name, target, attempts)
- - **MakeMoveForm**
+- **MakeMoveForm**
     - Inbound make move form (guess).
- - **ScoreForm**
+- **ScoreForm**
     - Representation of a completed game's Score (user_name, date, won flag,
     guesses).
- - **ScoreForms**
+- **ScoreForms**
     - Multiple ScoreForm container.
- - **UserForm**
+- **UserForm**
     - Representation of a user's performance (user_name, performance).
- - **UserForms**
+- **UserForms**
     - Multiple UserForm container.
 - **MoveHistoryForm**
     - MoveHistoryForm for outbound a completed game's moves history.
- - **StringMessage**
+- **StringMessage**
     - General purpose String container.
+
+##Example of how to test
+- Call Hangman.create_user and create a user
+'''json
+{
+ "message": "User user created"
+}
+'''
+ 
