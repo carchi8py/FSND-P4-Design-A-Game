@@ -13,7 +13,7 @@ from google.appengine.api import taskqueue
 
 from models import User, Game, Score
 from models import StringMessage, NewGameForm, GameForm, MakeMoveForm,\
-    GameForms, ScoreForms
+    GameForms, ScoreForms, UserForms
 import util
 
 USER_REQUEST = endpoints.ResourceContainer(
@@ -171,6 +171,17 @@ class Hangman(remote.Service):
         """
         scores = Score.query(Score.won == True).order(Score.guesses).fetch(request.number_of_results)
         return ScoreForms(items = [score.to_form() for score in scores])
+
+    @endpoints.method(response_message=UserForms,
+                      path='ranking',
+                      http_method='GET',
+                      name='get_user_rankings')
+    def get_user_rankings(self, request):
+        """
+        Order users by who has the most wins
+        """
+        users = User.query(User.wins > 0).order(User.wins)
+        return UserForms(items = [user.to_form() for user in users])
 
     def _winner(self, game):
         """

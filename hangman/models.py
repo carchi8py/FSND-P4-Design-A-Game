@@ -21,6 +21,11 @@ class User(ndb.Model):
     wins = ndb.IntegerProperty(default = 0)
     loses = ndb.IntegerProperty(default = 0)
 
+    def to_form(self):
+        return UserForm(user_name = self.name,
+                            wins = self.wins,
+                            loses = self.loses)
+
 class Game(ndb.Model):
     """
     Game Object
@@ -140,12 +145,27 @@ class ScoreForm(messages.Message):
     won = messages.BooleanField(3, required = True)
     guesses = messages.IntegerField(4, required = True)
 
-
 class ScoreForms(messages.Message):
     """
     Return multiple ScoreForms
     """
     items = messages.MessageField(ScoreForm, 1, repeated = True)
+
+
+class UserForm(messages.Message):
+    """
+    UserForm for outbound User's performance information
+    """
+    user_name = messages.StringField(1, required = True)
+    wins = messages.IntegerField(2, required = True)
+    loses = messages.IntegerField(3, required = True)
+
+
+class UserForms(messages.Message):
+    """
+    Return multiple UserForms
+    """
+    items = messages.MessageField(UserForm, 1, repeated = True)
 
 class StringMessage(messages.Message):
     """
