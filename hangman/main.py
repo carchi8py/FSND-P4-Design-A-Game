@@ -18,7 +18,7 @@ import logging
 import webapp2
 from google.appengine.api import mail, app_identity
 from api import Hangman
-from models import User
+from models import User, Game
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
@@ -33,12 +33,15 @@ class SendReminderEmail(webapp2.RequestHandler):
         app_id = app_identity.get_application_id()
         users = user.query(User.email != None)
         for user in users:
-            subject = "You have an unfinished game of Hangman"
-            body = "Hello {}, you have an unfinished game of hangman".format(user.name)
-            mail.send_mail('noreply@{}.appspotmail.com'.format(app_id),
-                           user.email,
-                           subject,
-                           body)
+            games = Game.query(Game.user == user.key).filter(
+                Game.game_over == False).fetch()
+            if games:
+                subject = "You have an unfinished game of Hangman"
+                body = "Hello {}, you have an unfinished game of hangman".format(user.name)
+                mail.send_mail('noreply@{}.appspotmail.com'.format(app_id),
+                               user.email,
+                               subject,
+                               body)
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
