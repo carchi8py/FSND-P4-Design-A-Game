@@ -112,7 +112,9 @@ class GameForm(messages.Message):
     moves = messages.StringField(7, repeated = True)
 
 class GameForms(messages.Message):
-    """Return multiple GameForms"""
+    """
+    Return multiple GameForms
+    """
     items = messages.MessageField(GameForm, 1, repeated = True)
 
 class NewGameForm(messages.Message):
@@ -129,6 +131,21 @@ class MakeMoveForm(messages.Message):
     """
     guess = messages.StringField(1, required = True)
 
+class ScoreForm(messages.Message):
+    """
+    ScoreForm for outbound Score information
+    """
+    user_name = messages.StringField(1, required = True)
+    date = messages.StringField(2, required = True)
+    won = messages.BooleanField(3, required = True)
+    guesses = messages.IntegerField(4, required = True)
+
+
+class ScoreForms(messages.Message):
+    """
+    Return multiple ScoreForms
+    """
+    items = messages.MessageField(ScoreForm, 1, repeated = True)
 
 class StringMessage(messages.Message):
     """

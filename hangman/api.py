@@ -11,19 +11,22 @@ from protorpc import remote, messages
 from google.appengine.api import memcache
 from google.appengine.api import taskqueue
 
-from models import User, Game
+from models import User, Game, Score
 from models import StringMessage, NewGameForm, GameForm, MakeMoveForm,\
-    GameForms
+    GameForms, ScoreForms
 import util
 
-USER_REQUEST = endpoints.ResourceContainer(user_name = messages.StringField(1),
-                                           email = messages.StringField(2))
+USER_REQUEST = endpoints.ResourceContainer(
+    user_name = messages.StringField(1),
+    email = messages.StringField(2))
 NEW_GAME_REQUEST = endpoints.ResourceContainer(NewGameForm)
 MAKE_MOVE_REQUEST = endpoints.ResourceContainer(
     MakeMoveForm,
     urlsafe_game_key=messages.StringField(1),)
 GET_GAME_REQUEST = endpoints.ResourceContainer(
-        urlsafe_game_key=messages.StringField(1),)
+    urlsafe_game_key=messages.StringField(1),)
+HIGH_SCORE_REQUEST = endpoints.ResourceContainer(
+    number_of_results=messages.IntegerField(1))
 
 @endpoints.api(name = "hangman", version = "v1")
 class Hangman(remote.Service):
@@ -132,7 +135,7 @@ class Hangman(remote.Service):
                 "User %s dosn't exist" % request.user_name)
         # we only care about the game that are not complete
         games = Game.query(Game.user == user.key).filter(Game.game_over == False)
-        return GameForms(items=[game.to_form('') for game in games])
+        return GameForms(items = [game.to_form('') for game in games])
 
     @endpoints.method(request_message=GET_GAME_REQUEST,
                       response_message=StringMessage,
@@ -150,13 +153,24 @@ class Hangman(remote.Service):
         #If we have a game and it not over delete the game
         if not game.game_over:
             game.key.delete()
-            return StringMessage(message="Game {} cancelled!".format(
+            return StringMessage(message = "Game {} cancelled!".format(
                     game.key.urlsafe()))
         #don't delete finished games
         else:
-            return StringMessage(message="Can't cancel, completed game".format(
+            return StringMessage(message = "Can't cancel, completed game".format(
                     game.key.urlsafe()))
 
+    @endpoints.method(request_message=HIGH_SCORE_REQUEST,
+                      response_message=ScoreForms,
+                      path='scores/high',
+                      name='get_high_scores',
+                      http_method='GET')
+    def get_high_scores(self, request):
+        """
+        Returns the leader-board for hangman
+        """
+        scores = Score.query(Score.won == True).order(Score.guesses).fetch(request.number_of_results)
+        return ScoreForms(items = [score.to_form() for score in scores])
 
     def _winner(self, game):
         """
