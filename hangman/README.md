@@ -17,6 +17,11 @@ revealed. Every wrong guess results in a turn being taken away. You keep
 guessing until the word is fully shown and you win, or you run out of turns 
 and your lose
 
+## Score:
+Two different score are keeps for this game.
+1. Win and Losses. The first is the number of wins and losses you've had. A win is any time you complete a hangman game with out running out of guessess. A loss is any time you run out of guessess before completeing the game. Use the get_user_rankings to get the players with the most wins
+1. Number of guesses: The second score is the number of guesses left when you finish the game. If you had 1 guess left you'll have a 1. if you had all 5 guess left you'll have a 5. The idea for this score is to show player who needed the least ammount of guesses to solve the word. You can use the get_high_scores to return this
+
 ##Files Included:
  - api.py: Contains endpoints and game playing logic.
  - app.yaml: App configuration.

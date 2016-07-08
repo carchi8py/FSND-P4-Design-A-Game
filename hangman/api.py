@@ -77,16 +77,16 @@ class Hangman(remote.Service):
         Alows the user to make a single move in Hangman
         """
         game = util.get_by_urlsafe(request.urlsafe_game_key, Game)
-        #If the user trys to make a move in a copleted game let them know 
-        #the game is over
+        # If the user trys to make a move in a copleted game let them know 
+        # the game is over
         if game.game_over:
             return game.to_form("The Game is over")
 
-        #if the user has guessed the word complete the game
+        # if the user has guessed the word complete the game
         if request.guess == game.target:
             return game.to_form(self._winner(game))
 
-        #The User is only allowed to guess one charater at a time
+        # The User is only allowed to guess one charater at a time
         if len(request.guess) != 1:
             raise endpoints.BadRequestException(
                 "Guess one letter at a time")
@@ -105,17 +105,17 @@ class Hangman(remote.Service):
             request.guess, game.revealed_word)
         game.moves.append(move_history)
 
-        #Now check to see if the user has 
+        # Now check to see if the user has 
         if game.revealed_word == game.target:
             return game.to_form(self._winner(game))
 
-        #check to see if the player has lost
+        # check to see if the player has lost
         if game.attempts_remaining < 1:
             lose_text = "Game Over"
             game.moves.append(lose_text)
             game.end_game(False)
             return game.to_form(lose_text)
-        #If the user hasn't lost then move on to the next move
+        # If the user hasn't lost then move on to the next move
         else:
             game.put()
             return game.to_form(hit_or_miss)
@@ -133,7 +133,7 @@ class Hangman(remote.Service):
         if not user:
             raise endpoints.NotFoundException(
                 "User %s dosn't exist" % request.user_name)
-        # we only care about the game that are not complete
+        #  we only care about the game that are not complete
         games = Game.query(Game.user == user.key).filter(Game.game_over == False)
         return GameForms(items = [game.to_form('') for game in games])
 
@@ -147,15 +147,15 @@ class Hangman(remote.Service):
         Cancels a game that has already started
         """
         game = util.get_by_urlsafe(request.urlsafe_game_key, Game)
-        #check to see if the game exist or not
+        # check to see if the game exist or not
         if not game:
             raise endpoints.NotFoundException("Game Not Found")
-        #If we have a game and it not over delete the game
+        # If we have a game and it not over delete the game
         if not game.game_over:
             game.key.delete()
             return StringMessage(message = "Game {} cancelled!".format(
                     game.key.urlsafe()))
-        #don't delete finished games
+        # don't delete finished games
         else:
             return StringMessage(message = "Can't cancel, completed game".format(
                     game.key.urlsafe()))

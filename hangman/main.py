@@ -14,7 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import logging
 import webapp2
 from google.appengine.api import mail, app_identity
 from api import Hangman
@@ -31,7 +30,7 @@ class SendReminderEmail(webapp2.RequestHandler):
         imcomplete games
         """
         app_id = app_identity.get_application_id()
-        users = user.query(User.email != None)
+        users = User.query(User.email != None)
         for user in users:
             games = Game.query(Game.user == user.key).filter(
                 Game.game_over == False).fetch()
