@@ -1,4 +1,4 @@
-#Full Stack Nanodegree Project 4: Hangman Api
+# Full Stack Nanodegree Project 4: Hangman Api
 
 ## Set-Up Instructions:
 1.  Update the value of application in app.yaml to the app ID you have registered
@@ -20,7 +20,7 @@ and your lose
 ## Score:
 Two different score are keeps for this game.
 1. Win and Losses. The first is the number of wins and losses you've had. A win is any time you complete a hangman game with out running out of guessess. A loss is any time you run out of guessess before completeing the game. Use the get_user_rankings to get the players with the most wins
-1. Number of guesses: The second score is the number of guesses left when you finish the game. If you had 1 guess left you'll have a 1. if you had all 5 guess left you'll have a 5. The idea for this score is to show player who needed the least ammount of guesses to solve the word. You can use the get_high_scores to return this
+1. Number of guesses: The second score is the number of guesses used to complete a word. The lower the number the less guess where used.
 
 ##Files Included:
  - api.py: Contains endpoints and game playing logic.
@@ -66,10 +66,10 @@ Two different score are keeps for this game.
 
 - **cancel_game**
     - Path: 'games/{urlsafe_game_key}'
-    - Method: POST
+    - Method: DELTETE
     - Parameters: urlsafe_game_key
     - Returns: Messages confirming deletion of the game.
-    - Description: Cancel an unfished game.
+    - Description: Cancel an unfished game. The game has been completely removed from the database and is no longer reachable
 
 - **get_high_scores**
     - Path: 'scores/high'

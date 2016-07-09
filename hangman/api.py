@@ -77,6 +77,9 @@ class Hangman(remote.Service):
         Alows the user to make a single move in Hangman
         """
         game = util.get_by_urlsafe(request.urlsafe_game_key, Game)
+        # If the game dosn't exist or has been cancled raise an error
+        if not game:
+            raise endpoints.NotFoundException("The game dose not exist")
         # If the user trys to make a move in a copleted game let them know 
         # the game is over
         if game.game_over:
